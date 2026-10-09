@@ -1,5 +1,5 @@
 
-const CACHE = "gerencial-modular-v2";
+const CACHE = "gerencial-modular-v3";
 
 const BASE = self.registration.scope;
 
