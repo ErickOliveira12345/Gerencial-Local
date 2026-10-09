@@ -160,7 +160,7 @@ export default function CrudPage({
                 >
                 
                 {f.type === 'services' ? (
-                <fieldset style={{ minWidth: '400px', width: '100%' }}>
+                <fieldset style={{ minWidth: '350px', width: '100%' }}>
                     <legend>{f.label}</legend>
 
                     <label>
@@ -209,15 +209,17 @@ export default function CrudPage({
                     <div style={{
                     display: 'grid',
                     gap: 12,
-                    marginTop: 16
+                    marginTop: 16,
+                    minWidth: '330px',
                     }}>
                     {(form[f.key] || []).map((item, index) => (
                         <div
                         key={item.id || index}
                         style={{
-                            padding: 12,
+                            padding: 6,
                             border: '1px solid #d5dce8',
-                            borderRadius: 8
+                            borderRadius: 8,
+                            minWidth: '330px'
                         }}
                         >
                         <div style={{
