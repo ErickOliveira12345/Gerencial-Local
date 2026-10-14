@@ -266,6 +266,13 @@ td {
   font-size: 14px;
 }
 
+.order-data {
+  display: inline-flex;
+  flex-direction: row;
+  min-width: 330px;
+  justify-content: space-evenly;
+}
+
 .order-actions-cell {
   padding: 0;
 }
@@ -489,6 +496,10 @@ tr:last-child td {
     max-width: 320px;
   }
 
+  .order-data{
+    max-width: 350px;
+  }
+
   /* Botões acima dos dados */
 
   .order-row > .order-actions-cell {
@@ -509,9 +520,9 @@ tr:last-child td {
   /* Dados da ordem */
 
   .order-data > td {
-    max-width: 120px;
-    min-width: 0;
-    padding: 4px 6px;
+    
+    min-width: 80px;
+    padding: 4px;
     border: 0;
     font-size: 12px;
     overflow-wrap: break-word;

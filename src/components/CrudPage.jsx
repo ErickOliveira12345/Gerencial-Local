@@ -478,14 +478,16 @@ export default function CrudPage({
                         <div style={{
                             padding: 16,
                             background: '#f8fafc',
-                            borderRadius: 8
+                            borderRadius: 8,
                         }}>
                             <h3>Detalhes da ordem de serviço</h3>
-
-                            <p><strong>Cliente:</strong> {row.cliente}</p>
-                            <p><strong>Data:</strong> {row.data}</p>
-                            <p><strong>Status:</strong> {row.status}</p>
-
+                            <div style={{display:'flex',
+                              gap:'15px',
+                            }}>
+                              <p><strong>Cliente:</strong> {row.cliente}</p>
+                              <p><strong>Data:</strong> {row.data}</p>
+                              <p><strong>Status:</strong> {row.status}</p>
+                            </div>
                             <div className="table-wrap">
                             <table>
                                 <thead>

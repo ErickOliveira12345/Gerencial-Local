@@ -1,4 +1,3 @@
-
 import { jsPDF } from 'jspdf';
 
 const moeda = valor =>
@@ -290,37 +289,39 @@ export async function baixarOrdemPdf(ordem, clientes = []) {
       ? Number(ordem.valorDesconto) || 0
       : total * percentualDesconto / 100;
 
-  const valorFinal =
-    ordem.valor != null && ordem.valor !== ''
-      ? Number(ordem.valor) || 0
-      : Math.max(0, total - valorDesconto);
+  // Calcula o valor final descontando o percentual
+  const valorFinal = Math.max(0, total - valorDesconto);
 
   verificarPagina(38);
 
-  // Subtotal dos serviços
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(20, 20, 20);
+ 
+  // Subtotal e desconto — imprimir somente se houver desconto
+  if (percentualDesconto > 0) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(20, 20, 20);
 
-  doc.text(
-    `Subtotal: ${moeda(total)}`,
-    192,
-    y + 6,
-    { align: 'right' }
-  );
+    // Subtotal dos serviços
+    doc.text(
+      `Subtotal: ${moeda(total)}`,
+      192,
+      y + 6,
+      { align: 'right' }
+    );
 
-  // Desconto percentual
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
+    // Desconto percentual
+    doc.text(
+      `Desconto (${percentualDesconto}%): - ${moeda(valorDesconto)}`,
+      192,
+      y + 14,
+      { align: 'right' }
+    );
 
-  doc.text(
-    `Desconto (${percentualDesconto}%): - ${moeda(valorDesconto)}`,
-    192,
-    y + 14,
-    { align: 'right' }
-  );
-
-  y += 18;
+    y += 18;
+  } else {
+    // Sem subtotal e desconto: reduz o espaçamento
+    y += 2;
+  }
 
   // Total final destacado
   doc.setFillColor(225, 233, 243);
