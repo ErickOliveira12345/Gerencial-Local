@@ -42,6 +42,12 @@ export default function Ordens() {
             ]
         },
         {
+            key: 'desconto',
+            label: 'Desconto (%)',
+            type: 'number',
+            required: true
+        },
+        {
             key: 'servicos',
             label: 'Serviços',
             type: 'services',

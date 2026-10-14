@@ -41,7 +41,7 @@ export async function baixarOrdemPdf(ordem, clientes = []) {
   const margem = 15;
   const larguraPagina = doc.internal.pageSize.getWidth();
   const limite = doc.internal.pageSize.getHeight() - 20;
-  let y = 20;
+  let y = 10;
 
   function verificarPagina(altura = 10) {
     if (y + altura > limite) {
@@ -80,44 +80,118 @@ export async function baixarOrdemPdf(ordem, clientes = []) {
 
     // Posição: x=130, y=17
     // Dimensões: 60 x 25 mm
-    doc.addImage(logo, 'PNG', 130, 17, 60, 25);
+    doc.addImage(logo, 'PNG', 130, 7, 60, 25);
     } catch (erro) {
     console.warn('PDF gerado sem logo:', erro);
     }
 
-    y = 55;
+    y = 40;
 
     doc.setDrawColor(120);
     doc.line(15, y, 195, y);
-    y += 12;
+    y += 6;
 
 
-  escrever(`Número: ${ordem.id || '-'}`);
-  escrever(`Data: ${formatarData(ordem.data)}`);
-  escrever(`Status: ${ordem.status || '-'}`);
-
-  y += 3;
-  escrever('DADOS DO CLIENTE', 12, true);
-
+  
   const cliente = clientes.find(
     c => c.nome === ordem.cliente
   );
 
-  escrever(`Nome: ${ordem.cliente || '-'}`);
+  // Duas colunas: cliente à esquerda e ordem à direita
+  const colunaEsquerda = margem;
+  const colunaDireita = 120;
+  const larguraColuna = 78;
+  const alturaLinha = 7;
 
-  if (cliente) {
-    if (cliente.telefone) {
-      escrever(`Telefone: ${cliente.telefone}`);
-    }
+  let yEsquerda = y;
+  let yDireita = y;
 
-    if (cliente.email) {
-      escrever(`E-mail: ${cliente.email}`);
-    }
+  // Títulos das colunas
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(20, 20, 20);
 
-    if (cliente.endereco) {
-      escrever(`Endereço: ${cliente.endereco}`);
-    }
+  doc.text('DADOS DO CLIENTE', colunaEsquerda, yEsquerda);
+  doc.text('DADOS DA ORDEM', colunaDireita, yDireita);
+
+  yEsquerda += 9;
+  yDireita += 9;
+
+  // Função para escrever dentro de cada coluna
+  function escreverColuna(texto, x, yAtual, largura) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+
+    const linhas = doc.splitTextToSize(
+      String(texto ?? '-'),
+      largura
+    );
+
+    doc.text(linhas, x, yAtual);
+
+    return yAtual + linhas.length * 5 + 3;
   }
+
+  // Coluna esquerda: dados do cliente
+  yEsquerda = escreverColuna(
+    `Nome: ${ordem.cliente || '-'}`,
+    colunaEsquerda,
+    yEsquerda,
+    larguraColuna
+  );
+
+  if (cliente?.telefone) {
+    yEsquerda = escreverColuna(
+      `Telefone: ${cliente.telefone}`,
+      colunaEsquerda,
+      yEsquerda,
+      larguraColuna
+    );
+  }
+
+  if (cliente?.email) {
+    yEsquerda = escreverColuna(
+      `E-mail: ${cliente.email}`,
+      colunaEsquerda,
+      yEsquerda,
+      larguraColuna
+    );
+  }
+
+  if (cliente?.endereco) {
+    yEsquerda = escreverColuna(
+      `Endereço: ${cliente.endereco}`,
+      colunaEsquerda,
+      yEsquerda,
+      larguraColuna
+    );
+  }
+
+  // Coluna direita: dados da ordem
+  yDireita = escreverColuna(
+    `Número: ${ordem.id || '-'}`,
+    colunaDireita,
+    yDireita,
+    larguraColuna
+  );
+
+  yDireita = escreverColuna(
+    `Data: ${formatarData(ordem.data)}`,
+    colunaDireita,
+    yDireita,
+    larguraColuna
+  );
+
+  yDireita = escreverColuna(
+    `Status: ${ordem.status || '-'}`,
+    colunaDireita,
+    yDireita,
+    larguraColuna
+  );
+
+  // Continua abaixo da coluna que ocupou mais espaço
+  y = Math.max(yEsquerda, yDireita) + 3;
+
 
   y += 5;
   escrever('SERVIÇOS', 12, true);
@@ -172,7 +246,9 @@ export async function baixarOrdemPdf(ordem, clientes = []) {
       73
     );
 
-    const altura = Math.max(10, linhas.length * 5 + 4);
+    
+    const altura = Math.max(7, linhas.length * 4 + 2);
+
 
     if (y + altura > limite) {
       doc.addPage();
@@ -186,7 +262,7 @@ export async function baixarOrdemPdf(ordem, clientes = []) {
     }
 
     doc.setTextColor(20, 20, 20);
-    doc.text(linhas, 18, y + 6);
+    doc.text(linhas, 18, y + 4.5);
     doc.text(String(quantidade), 104, y + 6, {
       align: 'center'
     });
@@ -203,21 +279,66 @@ export async function baixarOrdemPdf(ordem, clientes = []) {
     y += altura;
   });
 
-  verificarPagina(18);
+  
+  const percentualDesconto = Math.min(
+    100,
+    Math.max(0, Number(ordem.desconto) || 0)
+  );
 
+  const valorDesconto =
+    ordem.valorDesconto != null
+      ? Number(ordem.valorDesconto) || 0
+      : total * percentualDesconto / 100;
+
+  const valorFinal =
+    ordem.valor != null && ordem.valor !== ''
+      ? Number(ordem.valor) || 0
+      : Math.max(0, total - valorDesconto);
+
+  verificarPagina(38);
+
+  // Subtotal dos serviços
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(20, 20, 20);
+
+  doc.text(
+    `Subtotal: ${moeda(total)}`,
+    192,
+    y + 6,
+    { align: 'right' }
+  );
+
+  // Desconto percentual
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+
+  doc.text(
+    `Desconto (${percentualDesconto}%): - ${moeda(valorDesconto)}`,
+    192,
+    y + 14,
+    { align: 'right' }
+  );
+
+  y += 18;
+
+  // Total final destacado
   doc.setFillColor(225, 233, 243);
   doc.rect(margem, y, 180, 13, 'F');
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
+  doc.setTextColor(20, 20, 20);
+
   doc.text(
-    `VALOR TOTAL: ${moeda(total)}`,
+    `VALOR TOTAL: ${moeda(valorFinal)}`,
     192,
     y + 8.5,
     { align: 'right' }
   );
 
   y += 35;
+
 
   // ASSINATURAS
   verificarPagina(20);

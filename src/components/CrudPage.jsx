@@ -25,7 +25,9 @@ export default function CrudPage({
       Object.fromEntries(
         fields.map(f => [
           f.key,
-          row?.[f.key] ?? (f.type === 'services' ? [] : '')
+          row?.[f.key] ??
+          (f.key === 'desconto' ? 0 :
+          f.type === 'services' ? [] : '')
         ])
       )
     );
@@ -96,7 +98,19 @@ export default function CrudPage({
           throw new Error('Confira as quantidades e os preços.');
         }
 
-        data.valor = totalServices(items);
+        const subtotal = totalServices(items);
+        const desconto = Number(data.desconto) || 0;
+
+        if (desconto < 0 || desconto > 100) {
+          throw new Error('O desconto deve estar entre 0% e 100%.');
+        }
+
+        const valorDesconto = subtotal * (desconto / 100);
+
+        data.desconto = desconto;
+        data.subtotal = subtotal;
+        data.valorDesconto = valorDesconto;
+        data.valor = Math.max(0, subtotal - valorDesconto);
         data.servico = items.map(item => item.nome).join(', ');
       }
 
@@ -296,9 +310,24 @@ export default function CrudPage({
                     <p>Nenhum serviço adicionado.</p>
                     )}
 
-                    <p style={{ marginTop: 16, fontWeight: 700 }}>
-                    Total da ordem: {currency(totalServices(form[f.key]))}
-                    </p>
+                    {(() => {
+                      const subtotal = totalServices(form[f.key]);
+                      const desconto = Number(form.desconto) || 0;
+                      const valorDesconto = subtotal * desconto / 100;
+                      const total = subtotal - valorDesconto;
+
+                      return (
+                        <div style={{ marginTop: 16, textAlign: 'right' }}>
+                          <p>Subtotal: {currency(subtotal)}</p>
+                          <p>
+                            Desconto ({desconto}%): - {currency(valorDesconto)}
+                          </p>
+                          <p style={{ fontWeight: 700, fontSize: 18 }}>
+                            Valor total: {currency(total)}
+                          </p>
+                        </div>
+                      );
+                    })()}
                 </fieldset>
                 ) : (
 
@@ -353,15 +382,17 @@ export default function CrudPage({
 
       <section className="panel">
         <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                {columns.map(c => (
-                  <th key={c.key}>{c.label}</th>
-                ))}
-                <th>Ações</th>
-              </tr>
-            </thead>
+          <table className={store === 'ordens' ? 'orders-table' : ''}>
+            <div className='table-header'>
+              <thead>
+                <tr>
+                  {columns.map(c => (
+                    <th  key={c.key}>{c.label}</th>
+                  ))}
+                  {/* <th>Ações</th> */}
+                </tr>
+              </thead>
+            </div>
 
             
           <tbody>
@@ -381,61 +412,69 @@ export default function CrudPage({
 
                 return (
                 <React.Fragment key={row.id}>
-                    <tr>
-                    {columns.map(c => (
-                        <td key={c.key}>
-                        {c.format
+                    
+                  <tr className={isOrder ? 'order-row' : ''}>
+                    <div className='order-data'>
+                      {columns.map(c => (
+                        <td
+                          key={c.key}
+                          data-label={c.label}
+                          className="order-data-cell"
+                        >
+                          {c.format
                             ? c.format(row[c.key], row)
                             : row[c.key]}
                         </td>
-                    ))}
+                      ))}
+                    </div>
 
-                    <td>
-                        <div className="actions">
+                    <td className="order-actions-cell" data-label="Ações">
+                      <div className="actions">
                         {isOrder && (
-                            <button
+                          <button
                             type="button"
                             onClick={() =>
-                                setExpandedId(expanded ? null : row.id)
+                              setExpandedId(expanded ? null : row.id)
                             }
-                            >
+                          >
                             {expanded ? 'Fechar ordem' : 'Ver ordem'}
-                            </button>
+                          </button>
                         )}
 
                         <button onClick={() => start(row)}>
-                            Editar
+                          Editar
                         </button>
 
                         {onDownloadPdf && (
-                            <button
+                          <button
                             type="button"
                             onClick={async () => {
-                                try {
+                              try {
                                 await onDownloadPdf(row, ctx);
                                 setError('');
-                                } catch (err) {
+                              } catch (err) {
                                 setError(err.message);
-                                }
+                              }
                             }}
-                            >
+                          >
                             Baixar em PDF
-                            </button>
+                          </button>
                         )}
 
                         <button
-                            className="danger"
-                            onClick={() => del(row.id)}
+                          className="danger"
+                          onClick={() => del(row.id)}
                         >
-                            Excluir
+                          Excluir
                         </button>
-                        </div>
+                      </div>
                     </td>
-                    </tr>
+                  </tr>
+
 
                     {isOrder && expanded && (
                     <tr>
-                        <td colSpan={columns.length + 1}>
+                      <td colSpan={columns.length + 1}>
                         <div style={{
                             padding: 16,
                             background: '#f8fafc',
@@ -476,15 +515,51 @@ export default function CrudPage({
                             </table>
                             </div>
 
-                            <p style={{
+                            
+                          <p style={{
+                            textAlign: 'right',
+                            marginTop: 16
+                          }}>
+                            Subtotal: {currency(
+                              row.subtotal ??
+                              items.reduce(
+                                (sum, item) =>
+                                  sum +
+                                  (Number(item.quantidade) || 0) *
+                                  (Number(item.preco) || 0),
+                                0
+                              )
+                            )}
+                          </p>
+
+                          <p style={{ textAlign: 'right' }}>
+                            Desconto ({Number(row.desconto) || 0}%): - {currency(
+                              row.valorDesconto ??
+                              (
+                                (Number(row.subtotal) ||
+                                  items.reduce(
+                                    (sum, item) =>
+                                      sum +
+                                      (Number(item.quantidade) || 0) *
+                                      (Number(item.preco) || 0),
+                                    0
+                                  )
+                                ) * (Number(row.desconto) || 0) / 100
+                              )
+                            )}
+                          </p>
+
+                          <p style={{
                             textAlign: 'right',
                             fontWeight: 700,
-                            marginTop: 16
-                            }}>
+                            fontSize: 18,
+                            marginTop: 8
+                          }}>
                             Valor total: {currency(row.valor)}
-                            </p>
+                          </p>
+
                         </div>
-                        </td>
+                      </td>
                     </tr>
                     )}
                 </React.Fragment>
