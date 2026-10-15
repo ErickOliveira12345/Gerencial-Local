@@ -190,6 +190,10 @@ button:disabled {
   box-shadow: 0 4px 20px #1d35570a;
 }
 
+.panel select {
+  margin-bottom: 8px;
+}
+
 .metric {
   padding: 22px;
 }
@@ -234,6 +238,55 @@ button:disabled {
   overflow-x: auto;
 }
 
+.table-wrap button {
+  margin-left: 5px;
+  padding: 2px;
+}
+
+
+.table-wrap td {
+  padding: 5px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  vertical-align: top;
+  height: auto;
+  min-width: 80px;
+}
+
+/* Campo de edição da célula */
+.table-wrap td textarea {
+  display: block;
+  width: 100%;
+  min-width: 100px;
+  min-height: 36px;
+  height: auto;
+  padding: 8px;
+  box-sizing: border-box;
+
+  border: 1px solid #d6dfeb;
+  border-radius: 6px;
+
+  font: inherit;
+  line-height: 1.4;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+
+  resize: none;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+  
+.Obs {
+  width: 100%;
+  min-height: 60px;
+  box-sizing: border-box;
+  resize: vertical;
+  display: block;
+}
+
 .table-header {
   display: inline-flex;
   justify-content: space-evenly;
@@ -266,13 +319,21 @@ td {
   font-size: 14px;
 }
 
+.order-row {
+   border-bottom: 1px dashed #65758e;
+}
 .order-data {
   display: inline-flex;
   flex-direction: row;
   min-width: 330px;
-  justify-content: space-evenly;
-  border-bottom: #65758e solid 2px;
+  width: 100%;
+  justify-content: space-between;
+  border-bottom: #65758e solid 1px;
   margin-top: 5px;
+}
+
+.order-data td {
+  border-left: 1px solid #65758e;
 }
 
 .order-actions-cell {
@@ -483,7 +544,6 @@ tr:last-child td {
     display: flex;
     flex-direction: column;
     padding: 6px 0;
-    border-bottom: 1px solid #d5dce8;
   }
 
   .order-row > td {
@@ -522,10 +582,7 @@ tr:last-child td {
   /* Dados da ordem */
 
   .order-data > td {
-    
-    min-width: 80px;
     padding: 4px;
-    border: 0;
     font-size: 12px;
     overflow-wrap: break-word;
   }

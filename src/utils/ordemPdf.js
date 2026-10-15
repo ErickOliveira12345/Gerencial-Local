@@ -66,29 +66,48 @@ export async function baixarOrdemPdf(ordem, clientes = []) {
   }
 
   
-    // CABEÇALHO COM LOGO À DIREITA
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.text('ERICK ELETRICISTA', 15, y + 8);
 
-    doc.setFontSize(13);
-    doc.text('ORDEM DE SERVIÇO', 15, y + 19);
+  // CABEÇALHO COM LOGO À DIREITA
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(20, 35, 63);
+  doc.text('ERICK ELETRICISTA', margem, 15);
 
-    try {
+  // Telefone abaixo do nome
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(90, 100, 115);
+  doc.text('Telefone: (31)971317822', margem, 22);
+
+  // Título da Ordem de Serviço
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(20, 35, 63);
+  doc.text('ORDEM DE SERVIÇO', margem, 30);
+
+  // Data de impressão
+  const dataImpressao = new Date().toLocaleString('pt-BR');
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(90, 100, 115);
+  doc.text(`Data de impressão: ${dataImpressao}`, margem, 36);
+
+  // Logo à direita
+  try {
     const logo = await carregarLogo();
-
-    // Posição: x=130, y=17
-    // Dimensões: 60 x 25 mm
-    doc.addImage(logo, 'PNG', 130, 7, 60, 25);
-    } catch (erro) {
+    doc.addImage(logo, 'PNG', 130, 7, 60, 30);
+  } catch (erro) {
     console.warn('PDF gerado sem logo:', erro);
-    }
+  }
 
-    y = 40;
+  // Linha divisória abaixo do cabeçalho
+  y = 42;
 
-    doc.setDrawColor(120);
-    doc.line(15, y, 195, y);
-    y += 6;
+  doc.setDrawColor(120);
+  doc.line(margem, y, larguraPagina - margem, y);
+  y += 6;
+
 
 
   
