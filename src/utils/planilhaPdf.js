@@ -1,4 +1,5 @@
 
+
 import { jsPDF } from 'jspdf';
 
 async function carregarLogo() {
@@ -47,21 +48,19 @@ export async function imprimirPlanilha(planilha) {
   const alturaCabecalho = 10;
   const alturaUtilPagina = alturaPagina - 15;
 
-  // CABEÇALHO
+  // CABEÇALHO DO DOCUMENTO
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
   doc.setTextColor(20, 35, 63);
   doc.text('ERICK ELETRICISTA', margem, 18);
 
-  // Telefone
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   doc.setTextColor(90, 100, 115);
   doc.text('Telefone: (31)971317822', margem, 24);
 
-  // Nome da planilha
-  doc.setFont('helvetica', 'normal');
   doc.setFontSize(13);
+  doc.setTextColor(20, 35, 63);
 
   const nomeLinhas = doc.splitTextToSize(
     nome,
@@ -70,18 +69,14 @@ export async function imprimirPlanilha(planilha) {
 
   doc.text(nomeLinhas, margem, 33);
 
-  // Data de impressão
   doc.setFontSize(9);
   doc.setTextColor(90, 100, 115);
-  doc.text(
-    `Data de impressão: ${dataImpressao}`,
-    margem,
-    41
-  );
+  doc.text(`Data de impressão: ${dataImpressao}`, margem, 41);
 
   // LOGO À DIREITA
   try {
     const logo = await carregarLogo();
+
     doc.addImage(
       logo,
       'PNG',
@@ -102,17 +97,70 @@ export async function imprimirPlanilha(planilha) {
   if (!colunas.length) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.text(
-      'Esta planilha não possui colunas.',
-      margem,
-      y
-    );
+    doc.text('Esta planilha não possui colunas.', margem, y);
   } else {
-    const larguraColuna = larguraUtil / colunas.length;
+    // LARGURA DINÂMICA DAS COLUNAS
+    const larguraMinimaColuna = 20;
+    const larguraMaximaColuna = larguraUtil * 0.65;
+    const margemTexto = 8;
+
+    const largurasCalculadas = colunas.map(coluna => {
+      const titulo = String(coluna.nome || '');
+
+      const conteudos = linhas.map(linha =>
+        String(linha[coluna.id] ?? '')
+      );
+
+      // Mede o título em negrito
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+
+      const larguraTitulo = doc.getTextWidth(titulo);
+
+      // Mede os conteúdos em fonte normal
+      doc.setFont('helvetica', 'normal');
+
+      const larguraConteudos = conteudos.reduce(
+        (maior, texto) =>
+          Math.max(maior, doc.getTextWidth(texto)),
+        0
+      );
+
+      const larguraTexto =
+        Math.max(larguraTitulo, larguraConteudos) +
+        margemTexto;
+
+      return Math.max(
+        larguraMinimaColuna,
+        Math.min(larguraTexto, larguraMaximaColuna)
+      );
+    });
+
+    const somaLarguras = largurasCalculadas.reduce(
+      (soma, largura) => soma + largura,
+      0
+    );
+
+    // DISTRIBUI AS LARGURAS PROPORCIONALMENTE
+    const largurasColunas = somaLarguras > 0
+      ? largurasCalculadas.map(
+          largura => largura * larguraUtil / somaLarguras
+        )
+      : colunas.map(
+          () => larguraUtil / colunas.length
+        );
+
+    // POSIÇÃO INICIAL DE CADA COLUNA
+    function posicaoColuna(indice) {
+      return margem + largurasColunas
+        .slice(0, indice)
+        .reduce((soma, largura) => soma + largura, 0);
+    }
 
     // CABEÇALHO DA TABELA
     function desenharCabecalho() {
       doc.setFillColor(235, 239, 245);
+
       doc.rect(
         margem,
         y,
@@ -126,14 +174,17 @@ export async function imprimirPlanilha(planilha) {
       doc.setTextColor(20, 20, 20);
 
       colunas.forEach((coluna, index) => {
-        const x = margem + index * larguraColuna + 2;
+        const x = posicaoColuna(index) + 2;
+        const larguraColuna = Math.max(
+          1,
+          largurasColunas[index] - 4
+        );
 
         const texto = doc.splitTextToSize(
           String(coluna.nome || ''),
-          larguraColuna - 4
+          larguraColuna
         );
 
-        // Mantém o cabeçalho compacto, com quebra de texto
         doc.text(
           texto.slice(0, 2),
           x,
@@ -142,6 +193,7 @@ export async function imprimirPlanilha(planilha) {
       });
 
       doc.setDrawColor(180);
+
       doc.rect(
         margem,
         y,
@@ -150,7 +202,7 @@ export async function imprimirPlanilha(planilha) {
       );
 
       for (let i = 1; i < colunas.length; i++) {
-        const x = margem + i * larguraColuna;
+        const x = posicaoColuna(i);
 
         doc.line(
           x,
@@ -165,24 +217,20 @@ export async function imprimirPlanilha(planilha) {
 
     desenharCabecalho();
 
-    // LINHAS COM ALTURA AUTOMÁTICA
+    // LINHAS DA TABELA COM QUEBRA AUTOMÁTICA
     linhas.forEach((linha, indice) => {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
 
-      // Quebra o conteúdo de cada célula
-      const textos = colunas.map(coluna => {
-        const valor = String(
-          linha[coluna.id] ?? ''
-        );
+      const textos = colunas.map((coluna, index) => {
+        const valor = String(linha[coluna.id] ?? '');
 
         return doc.splitTextToSize(
           valor,
-          larguraColuna - 4
+          Math.max(1, largurasColunas[index] - 4)
         );
       });
 
-      // Calcula a altura conforme a célula mais longa
       const maiorQuantidadeLinhas = Math.max(
         1,
         ...textos.map(texto => texto.length)
@@ -190,19 +238,21 @@ export async function imprimirPlanilha(planilha) {
 
       const alturaLinha = Math.max(
         alturaMinima,
-        maiorQuantidadeLinhas * 4.5 + paddingVertical
+        maiorQuantidadeLinhas * 4.5 +
+          paddingVertical
       );
 
-      // Se a linha não couber, inicia outra página
+      // QUEBRA DE PÁGINA
       if (y + alturaLinha > alturaUtilPagina) {
         doc.addPage();
-        y = 15;
+        y = margem;
         desenharCabecalho();
       }
 
-      // Fundo alternado
+      // FUNDO ALTERNADO
       if (indice % 2 === 0) {
         doc.setFillColor(250, 250, 250);
+
         doc.rect(
           margem,
           y,
@@ -216,9 +266,8 @@ export async function imprimirPlanilha(planilha) {
       doc.setFontSize(9);
       doc.setTextColor(35, 35, 35);
 
-      // Imprime todas as linhas de cada célula
       textos.forEach((texto, index) => {
-        const x = margem + index * larguraColuna + 2;
+        const x = posicaoColuna(index) + 2;
 
         doc.text(
           texto.length ? texto : [''],
@@ -227,8 +276,9 @@ export async function imprimirPlanilha(planilha) {
         );
       });
 
-      // Bordas da linha
+      // BORDAS DA LINHA E COLUNAS
       doc.setDrawColor(210);
+
       doc.rect(
         margem,
         y,
@@ -236,9 +286,8 @@ export async function imprimirPlanilha(planilha) {
         alturaLinha
       );
 
-      // Divisões verticais
       for (let i = 1; i < colunas.length; i++) {
-        const x = margem + i * larguraColuna;
+        const x = posicaoColuna(i);
 
         doc.line(
           x,
@@ -265,16 +314,20 @@ export async function imprimirPlanilha(planilha) {
 
     y += espacamento;
 
-    // Espaço para o título
     if (y + 10 > alturaUtilPagina) {
       doc.addPage();
-      y = 15;
+      y = margem;
     }
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.setTextColor(20, 35, 63);
-    doc.text('Observações:', margem, y + 4);
+
+    doc.text(
+      'Observações:',
+      margem,
+      y + 4
+    );
 
     y += 8;
 
@@ -285,7 +338,7 @@ export async function imprimirPlanilha(planilha) {
     textoObs.forEach(linha => {
       if (y + alturaLinhaObs > alturaUtilPagina) {
         doc.addPage();
-        y = 15;
+        y = margem;
       }
 
       doc.text(linha, margem, y);
