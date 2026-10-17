@@ -11,7 +11,14 @@ export default function CrudPage({
   onDownloadPdf
 }) {
   const ctx = useData();
-  const rows = ctx[store] || [];
+
+  const rows = [...(ctx[store] || [])].sort((a, b) =>
+    String(a.nome || '').localeCompare(
+      String(b.nome || ''),
+      'pt-BR',
+      { sensitivity: 'base' }
+    )
+  );
 
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(null);
