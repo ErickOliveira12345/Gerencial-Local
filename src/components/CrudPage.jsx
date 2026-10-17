@@ -212,6 +212,13 @@ export default function CrudPage({
                         .filter(s => !(form[f.key] || []).some(
                             item => String(item.id) === String(s.id)
                         ))
+                        .sort((a, b) =>
+                          String(a.nome || '').localeCompare(
+                            String(b.nome || ''),
+                            'pt-BR',
+                            { sensitivity: 'base' }
+                          )
+                        )
                         .map(s => (
                             <option key={s.id} value={s.id}>
                             {s.nome} — {currency(s.preco)}
