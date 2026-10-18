@@ -365,9 +365,19 @@ if (store === 'servicos') {
                         onChange={e => change(f.key, e.target.value)}
                       >
                         <option value="">Selecione</option>
-                        {(f.options || []).map(o => (
-                          <option key={o} value={o}>{o}</option>
-                        ))}
+                        {(f.options || []).map(o => {
+                          const value =
+                           typeof o === 'object' ? o.value : o;
+
+                          const label =
+                           typeof o === 'object' ? o.label : o;
+
+                          return (
+                            <option key={value} value={value}>
+                              {label}
+                           </option>
+                          );
+                       })}
                       </select>
                     ) : (
                       <input style={{
