@@ -487,7 +487,7 @@ tr:last-child td {
   /* Conteúdo */
 
   .content {
-    padding: 150px 17px 24px;
+    padding: 150px 10px 24px;
   }
 
   .page-header {
@@ -497,7 +497,7 @@ tr:last-child td {
     left: 0;
     top: 10px;
     border-radius: 15px;
-    margin: 0 15px;
+    margin: 0 10px;
     z-index: 9;
     padding: 16px 17px;
     background: white;
@@ -521,7 +521,7 @@ tr:last-child td {
   }
 
   .panel {
-    padding: 14px;
+    padding: 10px;
   }
 
   .primary {
@@ -611,13 +611,8 @@ tr:last-child td {
 ========================================= */
 
 @media (max-width: 380px) {
-  .content {
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-
   .panel {
-    padding: 10px;
+    padding: 8px;
   }
 
   .actions {
