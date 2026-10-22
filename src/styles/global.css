@@ -421,6 +421,152 @@ tr:last-child td {
   color: #b91c1c;
 }
 
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  margin-left: auto;
+  border-radius: 999px;
+  background-color: #dc2626;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+
+
+.lembretes-page {
+  width: 100%;
+}
+
+.lembretes-section {
+  margin-bottom: 24px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 4%);
+}
+
+.lembretes-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.lembretes-section-title h2 {
+  margin: 0;
+  color: #172554;
+  font-size: 21px;
+}
+
+.lembretes-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.lembretes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lembrete-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.lembrete-icone {
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.lembrete-conteudo {
+  min-width: 0;
+}
+
+.lembrete-conteudo strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #172554;
+}
+
+.lembrete-conteudo p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.lembretes-vazio {
+  margin: 0;
+  color: #64748b;
+}
+
+@media (max-width: 600px) {
+  .lembretes-section {
+    padding: 16px;
+  }
+
+  .lembretes-section-title h2 {
+    font-size: 18px;
+  }
+}
+
+
+/* Botão de notificações no lado direito */
+.notification-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 15px;
+  right: 17px;
+  z-index: 300;
+  padding: 10px;
+  border: 1px solid #e1e7f0;
+  border-radius: 10px;
+  background: white;
+  color: #172554;
+  cursor: pointer;
+}
+
+.notification-button .notification-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 2px solid white;
+}
+
 
 /* =========================================
    11. TELAS MÉDIAS
@@ -470,7 +616,7 @@ tr:last-child td {
     top: 15px;
     left: 17px;
     z-index: 10;
-    padding: 9px;
+    padding: 5px;
     border: 1px solid #e1e7f0;
     border-radius: 10px;
     background: white;
@@ -601,6 +747,10 @@ tr:last-child td {
   .order-row .order-data-item {
     flex-shrink: 0;
   }
+
+  .notification-button {
+    padding: 5px;
+  }
 }
 
 
@@ -624,3 +774,6 @@ tr:last-child td {
     font-size: 12px;
   }
 }
+
+
+
