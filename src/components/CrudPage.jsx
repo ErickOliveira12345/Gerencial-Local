@@ -538,15 +538,19 @@ if (store === 'servicos') {
                         >
                           Excluir
                         </button>
-                        <button
-                          type="button"
-                          className="btn-abrir-ordem"
-                          title="Gerenciar ordem"
-                          aria-label="Gerenciar ordem"
-                          onClick={() => navigate(`/ordem/${row.id}`)}
-                        >
+                        
+                        {store === 'ordens' && (
+                          <button
+                           type="button"
+                           className="btn-abrir-ordem"
+                           title="Gerenciar ordem"
+                           aria-label="Gerenciar ordem"
+                           onClick={() => navigate(`/ordem/${row.id}`)}
+                          >
                           <ArrowRight size={18} />
-                        </button>
+                          </button>
+                        )}
+
                       </div>
                     </td>
                   </tr>
