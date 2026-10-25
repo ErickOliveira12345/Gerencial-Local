@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
 export default function CrudPage({
   store,
@@ -8,7 +10,8 @@ export default function CrudPage({
   subtitle,
   fields,
   columns,
-  onDownloadPdf
+  onDownloadPdf,
+  onlyId
 }) {
   
 const ctx = useData();
@@ -25,11 +28,22 @@ if (store === 'servicos') {
   );
 }
 
-
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(null);
   const [error, setError] = useState('');
   const [expandedId, setExpandedId] = useState(null);
+  const [filtroStatus, setFiltroStatus] = useState('Todas');
+
+  const ordensFiltradas = store === 'ordens'
+    ? rows.filter(row =>
+        filtroStatus === 'Todas' || row.status === filtroStatus
+      )
+    : rows;
+
+  const registrosExibidos = onlyId
+    ? ordensFiltradas.filter(row => String(row.id) === String(onlyId))
+    : ordensFiltradas;
 
   function start(row) {
     setEditing(row?.id || null);
@@ -411,6 +425,33 @@ if (store === 'servicos') {
       )}
 
       <section className="panel">
+        {store === 'ordens' && (
+          <div className="filtro-status">
+            <label htmlFor="filtroStatus">
+              Filtrar por status:
+            </label>
+
+            <select
+              id="filtroStatus"
+              value={filtroStatus}
+              onChange={e => {
+                setFiltroStatus(e.target.value);
+                setExpandedId(null);
+              }}
+            >
+              <option value="Todas">Todas</option>
+              <option value="Orçamento">Orçamento</option>
+              <option value="Agendada">Agendada</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="Concluída">Concluída</option>
+            </select>
+            <span className="contador-ordens">
+              {registrosExibidos.length}
+            </span>
+          </div>
+        )}
+
         <div className="table-wrap">
           <table className={store === 'ordens' ? 'orders-table' : ''}>
             <div className='table-header'>
@@ -426,7 +467,7 @@ if (store === 'servicos') {
 
             
           <tbody>
-            {rows.map(row => {
+            {registrosExibidos.map(row => {
                 const isOrder = store === 'ordens';
                 const expanded = expandedId === row.id;
 
@@ -496,6 +537,15 @@ if (store === 'servicos') {
                           onClick={() => del(row.id)}
                         >
                           Excluir
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-abrir-ordem"
+                          title="Gerenciar ordem"
+                          aria-label="Gerenciar ordem"
+                          onClick={() => navigate(`/ordem/${row.id}`)}
+                        >
+                          <ArrowRight size={18} />
                         </button>
                       </div>
                     </td>
@@ -601,8 +651,12 @@ if (store === 'servicos') {
 
           </table>
 
-          {rows.length === 0 && (
-            <p className="empty">Nenhum registro cadastrado.</p>
+          {ordensFiltradas.length === 0 && (
+            <p className="empty">
+              {store === 'ordens' && filtroStatus !== 'Todas'
+                ? `Nenhuma ordem com status "${filtroStatus}".`
+                : 'Nenhum registro cadastrado.'}
+            </p>
           )}
         </div>
       </section>

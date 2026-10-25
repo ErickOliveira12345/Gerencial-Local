@@ -112,7 +112,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
+  gap: 10px;
   margin-bottom: 28px;
 }
 
@@ -120,6 +120,7 @@ button:disabled {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
 .page-header h1 {
@@ -583,7 +584,7 @@ tr:last-child td {
    12. CELULAR
 ========================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   /* Menu lateral */
 
   .sidebar {
@@ -696,7 +697,7 @@ tr:last-child td {
     display: block;
     width: 100px;
     min-width: 0;
-    padding: 4px 8px;
+    padding: 4px 0;
     border: 0;
   }
   
@@ -775,5 +776,452 @@ tr:last-child td {
   }
 }
 
+/* =========================================
+   FILTRO DAS ORDENS DE SERVIÇO
+========================================= */
+
+
+.filtro-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.filtro-status label {
+  font-weight: 600;
+}
+
+.filtro-status select {
+  width: 190px;
+  max-width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #172554;
+  font-size: 14px;
+}
+
+.contador-ordens {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: #e0e7ff;
+  color: #172554;
+  font-weight: 700;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+
+@media (max-width: 600px) {
+  .filtro-status {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filtro-status select {
+    width: 80%;
+  }
+}
+
+/* Seta abrir detalhe da ordem */
+.btn-abrir-ordem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #172554;
+  cursor: pointer;
+}
+
+.btn-abrir-ordem:hover {
+  background: #e0e7ff;
+}
+
+/* Botão Voltar de detalhe da ordem para ordens */
+.ordem-detalhe-voltar {
+  margin-bottom: 16px;
+}
+
+.ordem-detalhe-voltar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #172554;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ordem-detalhe-voltar button:hover {
+  background: #e0e7ff;
+}
+
+
+/* =========================================
+   PÁGINA EXCLUSIVA DA ORDEM DE SERVIÇO
+========================================= */
+
+.ordem-detalhe {
+  width: 100%;
+  min-width: 0;
+}
+
+.ordem-detalhe-topo,
+.ordem-detalhe-cabecalho,
+.ordem-detalhe-acoes,
+.ordem-edicao-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ordem-detalhe-topo {
+  margin-bottom: 22px;
+}
+
+.ordem-detalhe-identificador {
+  color: #191b1d;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.ordem-detalhe-cabecalho {
+  margin-bottom: 24px;
+}
+
+.ordem-detalhe-cabecalho h1 {
+  margin: 0 0 6px;
+  color: #172554;
+}
+
+.ordem-detalhe-cabecalho p {
+  margin: 0;
+  color: #64748b;
+}
+
+.ordem-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #172554;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ordem-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ordem-btn-principal:hover {
+  background: #243b70;
+}
+
+.ordem-btn-secundario:hover {
+  background: #f1f5f9;
+}
+
+.ordem-btn-perigo {
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.ordem-btn-perigo:hover {
+  background: #fef2f2;
+}
+
+.ordem-secao {
+  margin-bottom: 18px;
+}
+
+.ordem-secao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  color: #172554;
+}
+
+.ordem-secao-titulo h2,
+.ordem-total-secao h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.ordem-campos {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(150px, 1fr) minmax(160px, 1fr);
+  gap: 18px;
+}
+
+.ordem-campos label,
+.ordem-adicionar-servico label,
+.ordem-servico-valores label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ordem-campos label > strong {
+  color: #172554;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.ordem-detalhe input,
+.ordem-detalhe select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 9px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #172554;
+  font: inherit;
+}
+
+.ordem-status {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ordem-status-concluida {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.ordem-status-cancelada {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ordem-status-em-andamento {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.ordem-status-agendada {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.ordem-status-orcamento {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.ordem-adicionar-servico {
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.ordem-servicos-lista {
+  display: grid;
+  gap: 12px;
+}
+
+.ordem-servico-item {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.ordem-servico-nome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: #172554;
+}
+
+.ordem-remover-servico {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #b91c1c;
+  cursor: pointer;
+}
+
+.ordem-servico-valores {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.7fr) minmax(150px, 1fr) minmax(150px, 1fr);
+  align-items: end;
+  gap: 16px;
+}
+
+.ordem-servico-subtotal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding-bottom: 10px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.ordem-servico-subtotal strong {
+  color: #172554;
+  font-size: 15px;
+}
+
+.ordem-total-secao {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ordem-total-secao h2 {
+  margin-bottom: 20px;
+}
+
+.ordem-financeiro-linha,
+.ordem-financeiro-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  color: #475569;
+}
+
+.ordem-financeiro-linha strong {
+  color: #172554;
+  text-align: right;
+}
+
+.ordem-financeiro-total {
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+  color: #172554;
+  font-size: 17px;
+}
+
+.ordem-financeiro-total strong {
+  font-size: 24px;
+}
+
+.ordem-input-desconto {
+  width: 100px !important;
+}
+
+.ordem-edicao-acoes {
+  justify-content: flex-start;
+  margin: 20px 0;
+}
+
+.ordem-detalhe-rodape {
+  margin-top: 24px;
+}
+
+.ordem-sucesso {
+  padding: 12px 14px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+@media (max-width: 700px) {
+  .ordem-detalhe-cabecalho {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ordem-detalhe-acoes {
+    width: 100%;
+  }
+
+  .ordem-detalhe-acoes .ordem-btn {
+    flex: 1;
+  }
+
+  .ordem-campos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .ordem-servico-valores {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .ordem-servico-subtotal {
+    grid-column: 1 / -1;
+  }
+
+  .ordem-financeiro-total strong {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .ordem-servico-valores {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ordem-servico-subtotal {
+    grid-column: auto;
+  }
+
+  .ordem-detalhe-acoes {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ordem-detalhe-acoes .ordem-btn {
+    width: 100%;
+  }
+
+  .ordem-financeiro-total {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
 
 

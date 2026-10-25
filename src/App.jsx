@@ -18,6 +18,7 @@ import MateriaisPage from "./modules/materiais/Page";
 import PlanilhasPage from "./modules/planilhas/Page";
 import RelatoriosPage from "./modules/relatorios/Page";
 import LembretesPage from "./modules/lembretes/Page";
+import OrdemDetalhe from './pages/OrdemDetalhe';
 
 export default function App() {
   return (
@@ -101,6 +102,12 @@ export default function App() {
           <Route
             path="backup"
             element={<Backup />}
+          />
+
+          {/* Detalhes da ordem de serviço */}
+          <Route
+            path="ordem/:id"
+            element={<OrdemDetalhe />}
           />
 
           {/* Redirecionamento para o Dashboard */}
