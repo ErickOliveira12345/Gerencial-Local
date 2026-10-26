@@ -584,7 +584,7 @@ tr:last-child td {
    12. CELULAR
 ========================================= */
 
-@media (max-width: 800px) {
+@media (max-width: 960px) {
   /* Menu lateral */
 
   .sidebar {
