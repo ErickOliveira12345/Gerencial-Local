@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import ConfirmDialog from './ConfirmDialog';
 
 export default function CrudPage({
   store,
@@ -34,6 +35,7 @@ if (store === 'servicos') {
   const [error, setError] = useState('');
   const [expandedId, setExpandedId] = useState(null);
   const [filtroStatus, setFiltroStatus] = useState('Todas');
+  const [confirmacao, setConfirmacao] = useState(null);
 
   const ordensFiltradas = store === 'ordens'
     ? rows.filter(row =>
@@ -150,15 +152,31 @@ if (store === 'servicos') {
     }
   }
 
+  
   async function del(id) {
-    if (!window.confirm('Excluir este registro?')) return;
+    const registro = rows.find(
+      row => String(row.id) === String(id)
+    );
+
+    setConfirmacao({
+      id,
+      nome: registro?.nome || registro?.cliente || '',
+    });
+  }
+
+  async function confirmarExclusao() {
+    if (!confirmacao) return;
 
     try {
-      await ctx.del(store, id);
+      await ctx.del(store, confirmacao.id);
+      setConfirmacao(null);
+      setError('');
     } catch (err) {
+      setConfirmacao(null);
       setError(err.message);
     }
   }
+
 
   const currency = value =>
     Number(value || 0).toLocaleString('pt-BR', {
@@ -664,6 +682,22 @@ if (store === 'servicos') {
           )}
         </div>
       </section>
+      
+      <ConfirmDialog
+        open={Boolean(confirmacao)}
+        title="Confirmar exclusão"
+        message={
+          confirmacao?.nome
+            ? `Deseja realmente excluir "${confirmacao.nome}"? Esta ação não poderá ser desfeita.`
+            : 'Deseja realmente excluir este registro? Esta ação não poderá ser desfeita.'
+        }
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        danger
+        onConfirm={confirmarExclusao}
+        onCancel={() => setConfirmacao(null)}
+      />
+
     </>
   );
 }
