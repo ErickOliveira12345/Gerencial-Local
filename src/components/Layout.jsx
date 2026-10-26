@@ -145,13 +145,16 @@ export default function Layout() {
           <BriefcaseBusiness />
           <span>Erick Eletricista</span>
 
-          <button
-            className="close"
-            onClick={() => setOpen(!open)}
-            aria-label="Fechar"
-          >
-            <X />
-          </button>
+          
+<button
+  type="button"
+  className="close"
+  onClick={() => setOpen(false)}
+  aria-label="Fechar menu"
+>
+  <X size={22} />
+</button>
+
         </div>
 
         <nav>
