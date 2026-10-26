@@ -584,7 +584,7 @@ tr:last-child td {
    12. CELULAR
 ========================================= */
 
-@media (max-width: 960px) {
+@media (max-width: 760px) {
   /* Menu lateral */
 
   .sidebar {
@@ -1223,5 +1223,66 @@ tr:last-child td {
     flex-direction: column;
   }
 }
+
+
+/* Corrigir menu lateral em celulares na vertical e horizontal */
+@media screen and (max-width: 960px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 200;
+
+    width: 252px;
+    max-width: 85vw;
+    height: 100vh;
+    height: 100dvh;
+
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform 0.2s ease,
+      visibility 0.2s ease;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 199;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    z-index: 150;
+  }
+}
+
+/* Ajustes específicos para celular na horizontal */
+@media screen and (max-width: 960px) and (orientation: landscape) {
+  .sidebar {
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  .content {
+    padding-top: 150px;
+  }
+
+  .page-header {
+    top: 10px;
+  }
+}
+
 
 
