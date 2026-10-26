@@ -1283,6 +1283,15 @@ tr:last-child td {
   .page-header {
     top: 10px;
   }
+
+   .mobile-menu {
+      top:15px;
+      left: 20px;
+   }
+
+   .notification-button {
+      right: 20px;
+   }
 }
 
 
