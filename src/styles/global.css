@@ -1276,6 +1276,19 @@ tr:last-child td {
     overscroll-behavior-y: contain;
   }
 
+  .sidebar .brand {
+    position: sticky;
+    top: 0;
+    z-index: 305;
+    min-height: 48px;
+    padding: 6px 0;
+    background: #14233f;
+  }
+
+  .sidebar .close {
+    position: relative;
+  }
+
   .content {
     padding-top: 150px;
   }
