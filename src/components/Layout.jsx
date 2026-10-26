@@ -147,7 +147,7 @@ export default function Layout() {
 
           <button
             className="close"
-            onClick={() => setOpen(false)}
+            onClick={() => setOpen(!open)}
             aria-label="Fechar"
           >
             <X />
