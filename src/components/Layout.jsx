@@ -110,7 +110,7 @@ export default function Layout() {
     <div className="shell">
       <button
         className="mobile-menu"
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(true)}
         aria-label="Abrir menu"
       >
         <Menu size={23} />
