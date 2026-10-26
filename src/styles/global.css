@@ -1261,6 +1261,7 @@ tr:last-child td {
   }
 
   .mobile-menu {
+    display: flex !important;
     position: fixed;
     z-index: 150;
   }
