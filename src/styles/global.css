@@ -114,6 +114,7 @@ button:disabled {
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 28px;
+  padding: 0 28px;
 }
 
 .page-header div {
@@ -145,6 +146,8 @@ button:disabled {
   border-radius: 10px;
   background: #2654c5;
   color: white;
+  max-width: 150px;
+  margin-top: 10px;
 }
 
 .actions {
@@ -672,7 +675,7 @@ tr:last-child td {
   }
 
   .primary {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   /* Formulários */
@@ -1225,28 +1228,28 @@ tr:last-child td {
 }
 
 
-/* Corrigir menu lateral em celulares na vertical e horizontal */
+
+/* =========================================
+   MENU E CABEÇALHO EM CELULARES
+========================================= */
+
 @media screen and (max-width: 960px) {
+  /* Menu lateral */
   .sidebar {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0 auto 0 0;
     z-index: 200;
-
     width: 252px;
     max-width: 85vw;
     height: 100vh;
     height: 100dvh;
-
-    transform: translateX(-100%);
-    visibility: hidden;
-    transition:
-      transform 0.2s ease,
-      visibility 0.2s ease;
-
+    padding: 16px 14px;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.2s ease, visibility 0.2s ease;
   }
 
   .sidebar.open {
@@ -1254,57 +1257,160 @@ tr:last-child td {
     visibility: visible;
   }
 
-  .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 199;
-  }
-
-  .mobile-menu {
-    display: flex !important;
-    position: fixed;
-    z-index: 150;
-  }
-}
-
-/* Ajustes específicos para celular na horizontal */
-@media screen and (max-width: 960px) and (orientation: landscape) {
-  .sidebar {
-    height: 100vh;
-    height: 100dvh;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-  }
-
   .sidebar .brand {
     position: sticky;
-    top: 0;
-    z-index: 305;
+    top: -16px;
+    z-index: 201;
+    flex-shrink: 0;
     min-height: 48px;
-    padding: 6px 0;
+    padding: 10px 4px 16px;
     background: #14233f;
   }
 
   .sidebar .close {
-    position: relative;
+    display: flex !important;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    margin-left: auto;
+    border: 0;
+    background: transparent;
+    color: white;
+  }
+
+  /* Sobreposição */
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 199;
+    border: 0;
+    background: #0008;
+  }
+
+  /* Botão abrir menu */
+  .mobile-menu {
+    display: flex !important;
+    position: fixed;
+    top: 15px;
+    left: 17px;
+    z-index: 150;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    min-height: 42px;
+    padding: 5px;
+    border: 1px solid #e1e7f0;
+    border-radius: 10px;
+    background: white;
+    color: #14233f;
+  }
+
+  /* Notificações */
+  .notification-button {
+    top: 15px;
+    right: 17px;
+    z-index: 150;
+  }
+
+  /* Conteúdo */
+  .content {
+    width: 100%;
+    min-width: 0;
+    padding: 150px 10px 24px;
+  }
+
+  /* Cabeçalho fixo */
+  .page-header {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    z-index: 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 12px 17px;
+    border: 1px solid #edf0f5;
+    border-radius: 15px;
+    background: white;
+  }
+
+  .page-header div {
+    text-align: left;
+    min-width: 0;
+  }
+
+  .page-header h1 {
+    font-size: 25px;
+  }
+
+  .page-header p {
+    margin-top: 4px;
+    font-size: 14px;
+  }
+
+  .cards {
+    gap: 10px;
+  }
+
+  .metric {
+    padding: 16px;
+  }
+
+  .metric strong {
+    font-size: 20px;
+  }
+
+  .panel {
+    padding: 10px;
+    margin-top: 32px;
+  }
+
+  .primary {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .entry-form > div,
+  .entry-form fieldset {
+    width: 100%;
+  }
+}
+
+/* =========================================
+   CELULAR NA HORIZONTAL
+========================================= */
+
+@media screen and (max-width: 960px) and (orientation: landscape) {
+  .page-header {
+    top: 8px;
+    padding: 8px 14px;
+    gap: 2px;
+  }
+
+  .page-header p {
+    margin-top: 2px;
   }
 
   .content {
-    padding-top: 150px;
+    padding-top: 105px;
   }
 
-  .page-header {
-    top: 10px;
+  .mobile-menu {
+    top: 12px;
+    left: 12px;
   }
 
-   .mobile-menu {
-      top:15px;
-      left: 20px;
-   }
-
-   .notification-button {
-      right: 20px;
-   }
+  .notification-button {
+    top: 12px;
+    right: 12px;
+  }
 }
 
 
