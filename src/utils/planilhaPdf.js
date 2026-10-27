@@ -26,7 +26,7 @@ export async function imprimirPlanilha(planilha) {
   }
 
   const doc = new jsPDF({
-    orientation: 'landscape',
+    orientation: 'portrait',
     unit: 'mm',
     format: 'a4'
   });
