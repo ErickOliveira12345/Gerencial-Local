@@ -2,6 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useData } from '../context/DataContext';
+import {
+  // mantenha os ícones que já existem
+  ClipboardCheck
+} from 'lucide-react';
 
 import {
   LayoutDashboard,
@@ -33,7 +37,8 @@ const links = [
   ['/planilhas', 'Planilhas', Table2],
   ['/relatorios', 'Relatórios', ChartNoAxesCombined],
   ['/lembretes', 'Lembretes', Bell],
-  ['/backup', 'Backup', DatabaseBackup]
+  ['/backup', 'Backup', DatabaseBackup],
+  ['/servicos-executados', 'Serviços Executados', ClipboardCheck]
 ];
 
 function normalizarStatus(status) {
@@ -56,6 +61,9 @@ function dataLocalHoje() {
 export default function Layout() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+
+  const estaNaPaginaLembretes =
+  location.pathname === '/lembretes';
 
   const { ordens = [], agenda = [] } = useData();
   const hoje = dataLocalHoje();
@@ -116,22 +124,24 @@ export default function Layout() {
         <Menu size={23} />
       </button>
 
-      <button
-        type="button"
-        className="notification-button"
-        aria-label="Abrir lembretes"
-        onClick={() => {
-          window.location.hash = '#/lembretes';
-        }}
-      >
-        <Bell size={22} />
-        {totalNotificacoes > 0 && (
-          <span className="notification-badge">
-            {totalNotificacoes}
-          </span>
-        )}
-      </button>
-
+      {!estaNaPaginaLembretes && (
+        <button
+          type="button"
+          className="notification-button"
+          aria-label="Abrir lembretes"
+          onClick={() => {
+            window.location.hash = '#/lembretes';
+          }}
+        >
+          <Bell size={22} />
+          {totalNotificacoes > 0 && (
+            <span className="notification-badge">
+              {totalNotificacoes}
+            </span>
+          )}
+        </button>
+      )}
+      
       {open && (
         <button
           className="overlay"
