@@ -19,6 +19,7 @@ import PlanilhasPage from "./modules/planilhas/Page";
 import RelatoriosPage from "./modules/relatorios/Page";
 import LembretesPage from "./modules/lembretes/Page";
 import OrdemDetalhe from './pages/OrdemDetalhe';
+import ServicosExecutados from "./pages/ServicosExecutados";
 
 export default function App() {
   return (
@@ -108,6 +109,12 @@ export default function App() {
           <Route
             path="ordem/:id"
             element={<OrdemDetalhe />}
+          />
+
+          {/* Serviços Executados */}
+          <Route
+            path="servicos-executados"
+            element={<ServicosExecutados />}
           />
 
           {/* Redirecionamento para o Dashboard */}
